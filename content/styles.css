@@ -1,0 +1,92 @@
+
+* {
+    animation-duration: 0.01s !important;
+    transition-duration: 0.01s !important;
+    animation-timing-function: linear !important; /* Ensure no delay in transitions */
+    transition-timing-function: linear !important;
+  }
+
+
+/* New class for the left menu */
+.left-menu {
+ width: 15% !important;
+ height: 100vh !important;
+ background-color: #FFFFFF;
+ position: fixed;      /* Fixed position relative to the viewport */
+ top: 0;               /* Align at the top of the screen */
+ left: 0;              /* Align at the left of the screen */
+ z-index: 9999;        /* Ensure it's above other content */
+
+
+ display: flex;
+ flex-direction: column;
+
+ overflow-y: scroll;
+ overflow-x: hidden;
+}
+
+.left-off-canvas-menu {
+    display: none !important;
+}
+
+
+.styled-button {
+    font-size: 16px;
+    color: #000000;
+    background-color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.03s ease, transform 0.03s ease;
+    margin: 0 !important;
+    text-align: left;
+    padding: 20px !important;
+    overflow: hidden;
+    min-height: 20px !important;
+}
+
+.styled-button:hover {
+    background-color: #bdbdbd;
+    text-decoration: underline;
+}
+
+.styled-button:active {
+    background-color: #bdbdbd;
+}
+
+.current-page {
+    background-color: #bdbdbd;
+
+}
+
+.title {
+    font-size: 20px;
+}
+
+.title_div {
+    padding: 20px;
+}
+
+.institution-page-container, .js-base-stream-container, .base-profile, .base-courses-container, .page-base-calendar, .base-messages-container, .bb-offcanvas-panel, div[bb-cache-compilation="base-grades"], #globalNavPageContentArea {
+    width: 85% !important;
+    position: absolute !important;
+    left: 15% !important;
+}
+
+
+
+.course-id-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .course-id-button:hover {
+    background-color: #45a049;
+  }
+
