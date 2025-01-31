@@ -6,7 +6,9 @@ const defaultEntries = [
   { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar"},
   { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages"},
   { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades"},
-  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course" }
+  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course" },
+  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout"}
+
 
 ];
 

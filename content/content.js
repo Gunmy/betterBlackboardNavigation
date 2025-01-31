@@ -8,7 +8,7 @@ const defaultEntries = [
   { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages"},
   { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades"},
   { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course" },
-
+  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout"}
 ];
 
 
@@ -174,7 +174,7 @@ function makeName(arr) {
   return name;
 }
 
-function addButtonToArticle(article) {
+function addButtonToArticle(article, entries) {
   // Check if the article already has a button
   if (article.querySelector('.course-id-button')) return;
 
@@ -193,12 +193,47 @@ function addButtonToArticle(article) {
     const courseId = article.getAttribute('data-course-id');
     const courseTitleElement = article.querySelector('h4.js-course-title-element').textContent.trim().split(/\s+/);
 
-
     addEntry(makeName(courseTitleElement), "https://ntnu.blackboard.com/webapps/blackboard/execute/courseMain?course_id=" + courseId);
 
     window.location.reload();
 
   });
+}
+
+function handlePageTitleHeader(h1, entries) {
+  console.log("Found h1")
+
+  if (h1.querySelector('.title-button')) return;
+
+  console.log("Found h1")
+
+
+  const titleTextSpan = h1.querySelector('#pageTitleText');
+  if (titleTextSpan) {
+
+    const button = document.createElement('button');
+    button.textContent = 'Add to list';
+
+    const pageTitle = titleTextSpan.textContent.trim();
+    if (pageTitle == "Course front page") {
+      return;
+    }
+  
+    // Apply the CSS class for styling
+    button.classList.add('title-button');
+  
+    // Append the button to the article
+    h1.appendChild(button);
+  
+    // Add an event listener to the button to log the ID when clicked
+    button.addEventListener('click', () => {
+      addEntry(pageTitle, window.location.href);
+      window.location.reload();
+  
+    });
+  }
+
+
 }
 
 
@@ -207,22 +242,29 @@ function doChanges(mutationsList) {
   removeOffcanvasOverlay(); // Remove overlays whenever the DOM changes
   removeClose();
 
-  let existingMenu = document.querySelector('.left-menu');
+  chrome.storage.local.get(['entries'], function(result) {
+    const entries = result.entries && result.entries.length > 0 ? result.entries : defaultEntries;
 
-  if (!existingMenu) {
-      chrome.storage.local.get(['entries'], function(result) {
-        const entries = result.entries && result.entries.length > 0 ? result.entries : defaultEntries;
-    applyLayout(entries);
+    let existingMenu = document.querySelector('.left-menu');
+
+    if (!existingMenu) {
+      applyLayout(entries);
+    }
+
+    mutationsList.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1) {
+          // Check for article elements
+          if (node.matches('article[data-course-id]')) {
+            addButtonToArticle(node, entries);
+          }
+    
+          // Check for the specific h1 element
+          if (node.matches('h1#pageTitleHeader')) {
+            handlePageTitleHeader(node, entries);
+          }
+        }
       });
-  }
-
-  mutationsList.forEach(mutation => {
-    mutation.addedNodes.forEach(node => {
-      if (node.nodeType === 1 && node.matches('article[data-course-id]')) {
-        // Add button when a new article is added
-        addButtonToArticle(node);
-
-      }
     });
   });
 }
@@ -241,4 +283,4 @@ function initialize() {
 initialize();
 
 document.querySelectorAll('article[data-course-id]').forEach(addButtonToArticle);
-
+document.querySelectorAll('h1#pageTitleHeader').forEach(handlePageTitleHeader);

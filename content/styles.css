@@ -70,6 +70,8 @@
     width: 85% !important;
     position: absolute !important;
     left: 15% !important;
+    height: 100vh !important;
+    overflow-y: scroll;
 }
 
 
@@ -85,6 +87,23 @@
     border: none;
     cursor: pointer;
   }
+
+#pageTitleHeader {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.title-button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+}
   
   .course-id-button:hover {
     background-color: #45a049;
