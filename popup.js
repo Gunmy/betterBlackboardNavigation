@@ -1,23 +1,20 @@
-// Default entries when the list is empty
+console.log("Rendering popup!")
+
 const defaultEntries = [
-  { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page" },
-  { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile" },
-  { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream" },
-  { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar"},
-  { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages"},
-  { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades"},
-  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course" },
-  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout"}
-
-
+  { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page", group: "start", role: "title"},
+  { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile", group: "profile", role: "title"},
+  { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream", group: "activity", role: "title"},
+  { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar", group: "calendar", role: "title"},
+  { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages", group: "messages", role: "title"},
+  { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades", group: "grades", role: "title"},
+  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course", group: "courses", role: "title"},
+  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout", group: "logout", role: "title"}
 ];
 
-// Get references to the DOM elements
 const addButton = document.getElementById('addButton');
 const entryNameInput = document.getElementById('entryName');
 const entryLinkInput = document.getElementById('entryLink');
 const entriesList = document.getElementById('entriesList');
-
 
 // Function to render the entries list
 function renderEntries(entries) {
@@ -40,7 +37,7 @@ function renderEntries(entries) {
 function addEntry(name, link) {
   chrome.storage.local.get(['entries'], function(result) {
     let entries = result.entries || [];
-    entries.push({ name, link });
+    entries.push({ name, link, group: "added"});
 
     chrome.storage.local.set({ entries }, function() {
       if (chrome.runtime.lastError) {

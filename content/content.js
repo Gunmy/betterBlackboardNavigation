@@ -1,14 +1,14 @@
-console.log('Content script loaded!');
+console.log("Rendering content!")
 
 const defaultEntries = [
-  { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page" },
-  { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile" },
-  { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream" },
-  { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar"},
-  { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages"},
-  { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades"},
-  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course" },
-  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout"}
+  { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page", group: "start", role: "title"},
+  { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile", group: "profile", role: "title"},
+  { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream", group: "activity", role: "title"},
+  { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar", group: "calendar", role: "title"},
+  { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages", group: "messages", role: "title"},
+  { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades", group: "grades", role: "title"},
+  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course", group: "courses", role: "title"},
+  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout", group: "logout", role: "title"}
 ];
 
 
@@ -54,41 +54,58 @@ function applyLayout(entries) {
 
     let existingMenu = main.querySelector('.left-menu');
     if (!existingMenu) {
-      let menu = document.createElement('div');
+      // Create the menu
+      let menu = document.createElement('ul');
       menu.classList.add('left-menu');
 
-      // Create the inner div
-      let innerDiv = document.createElement('div');
-
-      // Create the h1 element
+      // Create the title
+      let titleDiv = document.createElement('li');
       let title = document.createElement('h1');
       title.textContent = 'Links'; // Set the text for the title
-
       title.classList.add('title');
-      innerDiv.classList.add('title_div');
+      titleDiv.classList.add('title_div');
+      titleDiv.appendChild(title);
+      menu.appendChild(titleDiv);
 
-      // Append the h1 to the inner div
-      innerDiv.appendChild(title);
+      // Create the links
 
-      // Append the inner div to the menu
-      menu.appendChild(innerDiv);
+      const groups = {}
 
+      console.log(entries);
       if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach(({ name, link }) => {
-          const button = document.createElement('button');
-          button.textContent = name;
-          button.classList.add('styled-button'); // Add class for styling
-      
-          if (areUrlsEqual(window.location.href, link) || sameId(window.location.href, link)) {
-            button.classList.add('current-page'); // Add class for styling
+        entries.forEach(({ name, link, group, role }) => {
 
+          if (!(group in groups)) {
+            groups[group] = {}
+
+            groups[group].outer = document.createElement('li');
+            groups[group].inner = document.createElement('ul');
+            
+            groups[group].outer.appendChild(groups[group].inner)
+            menu.appendChild(groups[group].outer);
           }
 
-          button.addEventListener('click', () => {
-            window.location.href = link;
-          });
-      
-          menu.appendChild(button);
+          if (role == "title") {
+            const title = document.createElement('h1');
+            const a = document.createElement('a');
+
+            a.textContent = name;
+            a.href = link;
+
+            title.appendChild(a);
+
+            groups[group].outer.prepend(title);
+          } else if (role == "sublink") {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+
+            a.textContent = name;
+            a.href = link;
+
+            li.appendChild(a);
+
+            groups[group].inner.appendChild(li);
+          }
         });
       } else {
         console.error('Data is not in the expected format or is empty', entries);
@@ -120,10 +137,10 @@ function removeClose() {
 }
 
 
-function addEntry(name, link) {
+function addEntry(name, link, group, role) {
   chrome.storage.local.get(['entries'], function(result) {
     let entries = result.entries || [];
-    entries.push({ name, link });
+    entries.push({ name, link, group, role });
 
     chrome.storage.local.set({ entries }, function() {
       if (chrome.runtime.lastError) {
@@ -193,7 +210,7 @@ function addButtonToArticle(article, entries) {
     const courseId = article.getAttribute('data-course-id');
     const courseTitleElement = article.querySelector('h4.js-course-title-element').textContent.trim().split(/\s+/);
 
-    addEntry(makeName(courseTitleElement), "https://ntnu.blackboard.com/webapps/blackboard/execute/courseMain?course_id=" + courseId);
+    addEntry(makeName(courseTitleElement), "https://ntnu.blackboard.com/webapps/blackboard/execute/courseMain?course_id=" + courseId, courseId, "title");
 
     window.location.reload();
 
@@ -201,12 +218,8 @@ function addButtonToArticle(article, entries) {
 }
 
 function handlePageTitleHeader(h1, entries) {
-  console.log("Found h1")
 
-  if (h1.querySelector('.title-button')) return;
-
-  console.log("Found h1")
-
+  if (h1.querySelector('.title-button') || window.location.href.includes("modulepage")) return;
 
   const titleTextSpan = h1.querySelector('#pageTitleText');
   if (titleTextSpan) {
@@ -215,9 +228,6 @@ function handlePageTitleHeader(h1, entries) {
     button.textContent = 'Add to list';
 
     const pageTitle = titleTextSpan.textContent.trim();
-    if (pageTitle == "Course front page") {
-      return;
-    }
   
     // Apply the CSS class for styling
     button.classList.add('title-button');
@@ -227,7 +237,7 @@ function handlePageTitleHeader(h1, entries) {
   
     // Add an event listener to the button to log the ID when clicked
     button.addEventListener('click', () => {
-      addEntry(pageTitle, window.location.href);
+      addEntry(pageTitle, window.location.href, getCourseIdFromLink(window.location.href), "sublink");
       window.location.reload();
   
     });
