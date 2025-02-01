@@ -17,54 +17,71 @@
  left: 0;              /* Align at the left of the screen */
  z-index: 9999;        /* Ensure it's above other content */
 
-
  display: flex;
  flex-direction: column;
 
- overflow-y: scroll;
+ overflow-y: auto;
  overflow-x: hidden;
 }
 
-.left-off-canvas-menu {
-    display: none !important;
-}
 
 
-.styled-button {
-    font-size: 16px;
-    color: #000000;
-    background-color: #FFFFFF;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.03s ease, transform 0.03s ease;
+.left-menu, .left-menu > li, .left-menu > li > h1, .left-menu > li > ul, .left-menu > li > ul > li, .left-menu > li > ul > li > a, .left-menu > li > h1 > a {
+    padding: 0 !important;
     margin: 0 !important;
-    text-align: left;
-    padding: 20px !important;
-    overflow: hidden;
-    min-height: 20px !important;
+    text-decoration: none !important;
+
+    transition: background-color 0.03s ease, transform 0.03s ease;
+    color: black;
+
+    list-style: none;
 }
 
-.styled-button:hover {
-    background-color: #bdbdbd;
-    text-decoration: underline;
-}
-
-.styled-button:active {
-    background-color: #bdbdbd;
-}
-
-.current-page {
-    background-color: #bdbdbd;
+.left-menu > li, .left-menu > li > h1, .left-menu > li > ul, .left-menu > li > ul > li, .left-menu > li > ul > li > a, .left-menu > li > h1 > a {
+    width: 100%;
+    height: auto !important;
 
 }
 
-.title {
-    font-size: 20px;
+.left-menu > li > h1 > a > p {
+    font-size: 20px !important;
+    padding: 10px !important;
+
+    white-space: nowrap !important;           
+    overflow: hidden !important;              
+    text-overflow: ellipsis !important; 
+
+    margin: 0 !important;
+
+    text-decoration: none !important;
+
+    background-color: inherit !important;
+
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+    font-weight: 100 !important;
+
+
 }
 
-.title_div {
-    padding: 20px;
+.left-menu > li > ul > li > a > p {
+    padding: 10px !important;
+    padding-left: 30px !important;
+
+    font-size: 15px !important;
+    margin: 0 !important;
+
+    text-decoration: none !important;
+
+    background-color: inherit !important;
+
+    font-family:Arial, Helvetica, sans-serif !important;
+
+    font-weight: "normal" !important;
+
+
 }
+
 
 .institution-page-container, .js-base-stream-container, .base-profile, .base-courses-container, .page-base-calendar, .base-messages-container, .bb-offcanvas-panel, div[bb-cache-compilation="base-grades"], #globalNavPageContentArea {
     width: 85% !important;
@@ -109,3 +126,40 @@
     background-color: #45a049;
   }
 
+
+  .left-menu > .title_div > .title {
+    font-size: 20px !important;
+
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
+
+    font-weight: 100 !important;
+}
+
+.left-menu > .title_div {
+    padding: 20px !important;
+}
+
+
+.left-off-canvas-menu {
+    display: none !important;
+
+}
+
+
+.current-page, .current-page > h1 > a > p, .current-page > ul > li > a > p {
+    background-color: #585858 !important;
+    color: white !important;
+}
+
+.current-subpage, .current-subpage  > p {
+    background-color: #333333  !important;
+    color: white !important;
+
+}
+
+.left-menu > li > ul > li > a:hover, .left-menu > li > h1 > a:hover {
+    background-color: #333333 !important;
+    text-decoration: underline !important;
+    color: white !important;
+
+}

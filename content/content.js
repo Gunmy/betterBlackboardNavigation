@@ -83,25 +83,43 @@ function applyLayout(entries) {
             
             groups[group].outer.appendChild(groups[group].inner)
             menu.appendChild(groups[group].outer);
+
+            
+            if (areUrlsEqual(link, window.location.href) || sameId(link, window.location.href)) {
+              groups[group].outer.classList.add("current-page");
+            }
           }
 
           if (role == "title") {
             const title = document.createElement('h1');
             const a = document.createElement('a');
+            const p = document.createElement('p')
 
-            a.textContent = name;
+            p.textContent = name;
             a.href = link;
 
+            if (areUrlsEqual(link, window.location.href) || (window.location.href.startsWith("https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view") && sameId(link, window.location.href))) {
+              title.classList.add("current-subpage");
+            }
+
+            a.appendChild(p);
             title.appendChild(a);
 
             groups[group].outer.prepend(title);
           } else if (role == "sublink") {
             const li = document.createElement('li');
             const a = document.createElement('a');
+            const p = document.createElement('p')
 
-            a.textContent = name;
+
+            p.textContent = " ▪ " + name;
             a.href = link;
 
+            if (areUrlsEqual(link, window.location.href)) {
+              a.classList.add("current-subpage");
+            }
+
+            a.appendChild(p);
             li.appendChild(a);
 
             groups[group].inner.appendChild(li);
@@ -157,36 +175,7 @@ function makeName(arr) {
   let book = ["📘","📙","📕"][Math.floor(Math.random() * 3)]
 
 
-  let name = book + arr[0]
-  let words = arr.slice(1, arr.length - 2)
-
-  let sortedWords = [...words].sort((a, b) => b.length - a.length).slice(0, 3)
-  
-  const filteredWords = sortedWords.slice(0, 5).some(word => word.length > 2)
-    ? sortedWords.filter(word => word.length > 2)  // Keep only words over 5 letters
-    : [sortedWords[0]];
-
-
-    if (filteredWords.length > 1) {
-      words.forEach(word => {
-        if (filteredWords.includes(word)) {
-          if (word.length <= 8) {
-            name += " " + word
-          } else {
-            name += " " + word.substring(0, 6);
-    
-          }
-        }
-      
-      });
-    } else {
-      if (words[0].length <= 15) {
-        name += " " + words[0]
-      } else {
-        name += " " + words[0].substring(0, 10);
-      }
-    }
-
+  let name = book + arr.slice(0, arr.length - 2).join(" ");
 
   return name;
 }
@@ -246,11 +235,21 @@ function handlePageTitleHeader(h1, entries) {
 
 }
 
+let lastURL = window.location.href;
 
 // Mutation observer callback for removing overlays dynamically
 function doChanges(mutationsList) {
   removeOffcanvasOverlay(); // Remove overlays whenever the DOM changes
   removeClose();
+
+  const currentURL = window.location.href;
+  if (currentURL !== lastURL) {
+
+    let existingMenu = document.querySelector('.left-menu');
+    existingMenu.remove();
+
+    lastURL = currentURL; // Update the last known URL
+  }
 
   chrome.storage.local.get(['entries'], function(result) {
     const entries = result.entries && result.entries.length > 0 ? result.entries : defaultEntries;
