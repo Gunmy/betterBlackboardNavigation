@@ -22,6 +22,7 @@
 
  overflow-y: auto;
  overflow-x: hidden;
+
 }
 
 
@@ -40,12 +41,15 @@
 .left-menu > li, .left-menu > li > h1, .left-menu > li > ul, .left-menu > li > ul > li, .left-menu > li > ul > li > a, .left-menu > li > h1 > a {
     width: 100%;
     height: auto !important;
-
+ 
 }
 
 .left-menu > li > h1 > a > p {
-    font-size: 20px !important;
-    padding: 10px !important;
+    padding: 1rem !important;
+    padding-left: 2rem !important;
+
+    font-size: 1.2rem !important;
+
 
     white-space: nowrap !important;           
     overflow: hidden !important;              
@@ -61,14 +65,14 @@
 
     font-weight: 100 !important;
 
-
+    height: auto !important;
 }
 
 .left-menu > li > ul > li > a > p {
-    padding: 10px !important;
-    padding-left: 30px !important;
+    padding: 1rem !important;
+    padding-left: 2rem !important;
 
-    font-size: 15px !important;
+    font-size: 1rem  !important;
     margin: 0 !important;
 
     text-decoration: none !important;
@@ -79,7 +83,7 @@
 
     font-weight: "normal" !important;
 
-
+    height: auto !important;
 }
 
 
@@ -146,9 +150,13 @@
 }
 
 
-.current-page, .current-page > h1 > a > p, .current-page > ul > li > a > p {
+.current-page, .current-page > h1 > a > p, .current-page > ul > li > a > p, .left-menu > li:hover {
     background-color: #585858 !important;
     color: white !important;
+}
+
+.left-menu > li:hover {
+    background-color: #585858 !important;
 }
 
 .current-subpage, .current-subpage  > p {
@@ -162,4 +170,8 @@
     text-decoration: underline !important;
     color: white !important;
 
+}
+
+.left-menu > li:hover > h1 > a > p, .left-menu > li:hover > ul > li > a > p {
+    color: white !important;
 }

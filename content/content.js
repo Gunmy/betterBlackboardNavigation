@@ -1,6 +1,7 @@
 console.log("Rendering content!")
 
 const defaultEntries = [
+  { name: "Blackboard", link: "https://ntnu.blackboard.com", group: "blackboard", role: "title"},
   { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page", group: "start", role: "title"},
   { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile", group: "profile", role: "title"},
   { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream", group: "activity", role: "title"},
@@ -57,15 +58,6 @@ function applyLayout(entries) {
       // Create the menu
       let menu = document.createElement('ul');
       menu.classList.add('left-menu');
-
-      // Create the title
-      let titleDiv = document.createElement('li');
-      let title = document.createElement('h1');
-      title.textContent = 'Links'; // Set the text for the title
-      title.classList.add('title');
-      titleDiv.classList.add('title_div');
-      titleDiv.appendChild(title);
-      menu.appendChild(titleDiv);
 
       // Create the links
 

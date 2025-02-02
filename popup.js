@@ -1,6 +1,7 @@
 console.log("Rendering popup!")
 
 const defaultEntries = [
+  { name: "Blackboard", link: "https://ntnu.blackboard.com", group: "blackboard", role: "title"},
   { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page", group: "start", role: "title"},
   { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile", group: "profile", role: "title"},
   { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream", group: "activity", role: "title"},
@@ -10,6 +11,7 @@ const defaultEntries = [
   { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course", group: "courses", role: "title"},
   { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout", group: "logout", role: "title"}
 ];
+
 
 const addButton = document.getElementById('addButton');
 const entryNameInput = document.getElementById('entryName');
