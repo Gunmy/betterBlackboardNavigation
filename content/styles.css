@@ -175,3 +175,11 @@
 .left-menu > li:hover > h1 > a > p, .left-menu > li:hover > ul > li > a > p {
     color: white !important;
 }
+
+.red-button {
+    background-color: red;
+}
+
+.red-button:hover {
+    background-color: #CC0000;
+  }
