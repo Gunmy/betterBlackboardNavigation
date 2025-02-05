@@ -52,6 +52,72 @@ function areUrlsEqual(url1, url2) {
   return normalizeUrl(url1) === normalizeUrl(url2);
 }
 
+
+function renderEntries(entries, menu) {
+  // Create the links
+
+  menu.innerHTML = "";
+
+  const groups = {}
+
+  if (Array.isArray(entries) && entries.length > 0) {
+    entries.forEach(({ name, link, group, role }) => {
+
+      if (!(group in groups)) {
+        groups[group] = {}
+
+        groups[group].outer = document.createElement('li');
+        groups[group].inner = document.createElement('ul');
+        
+        groups[group].outer.appendChild(groups[group].inner)
+        menu.appendChild(groups[group].outer);
+
+        
+        if (areUrlsEqual(link, window.location.href) || sameId(link, window.location.href)) {
+          groups[group].outer.classList.add("current-page");
+        }
+      }
+
+      if (role == "title") {
+        const title = document.createElement('h1');
+        const a = document.createElement('a');
+        const p = document.createElement('p')
+
+        p.textContent = name;
+        a.href = link;
+
+        if (areUrlsEqual(link, window.location.href) || (window.location.href.startsWith("https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view") && sameId(link, window.location.href))) {
+          title.classList.add("current-subpage");
+        }
+
+        a.appendChild(p);
+        title.appendChild(a);
+
+        groups[group].outer.prepend(title);
+      } else if (role == "sublink") {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        const p = document.createElement('p')
+
+
+        p.textContent = " ▪ " + name;
+        a.href = link;
+
+        if (areUrlsEqual(link, window.location.href)) {
+          a.classList.add("current-subpage");
+        }
+
+        a.appendChild(p);
+        li.appendChild(a);
+
+        groups[group].inner.appendChild(li);
+      }
+    });
+  } else {
+    console.error('Data is not in the expected format or is empty', entries);
+  }
+}
+
 // Function to apply layout classes to the left menu and off-canvas panel
 function applyLayout(entries) {
 
@@ -63,68 +129,8 @@ function applyLayout(entries) {
       // Create the menu
       let menu = document.createElement('ul');
       menu.classList.add('left-menu');
-
-      // Create the links
-
-      const groups = {}
-
-      console.log(entries);
-      if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach(({ name, link, group, role }) => {
-
-          if (!(group in groups)) {
-            groups[group] = {}
-
-            groups[group].outer = document.createElement('li');
-            groups[group].inner = document.createElement('ul');
-            
-            groups[group].outer.appendChild(groups[group].inner)
-            menu.appendChild(groups[group].outer);
-
-            
-            if (areUrlsEqual(link, window.location.href) || sameId(link, window.location.href)) {
-              groups[group].outer.classList.add("current-page");
-            }
-          }
-
-          if (role == "title") {
-            const title = document.createElement('h1');
-            const a = document.createElement('a');
-            const p = document.createElement('p')
-
-            p.textContent = name;
-            a.href = link;
-
-            if (areUrlsEqual(link, window.location.href) || (window.location.href.startsWith("https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view") && sameId(link, window.location.href))) {
-              title.classList.add("current-subpage");
-            }
-
-            a.appendChild(p);
-            title.appendChild(a);
-
-            groups[group].outer.prepend(title);
-          } else if (role == "sublink") {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            const p = document.createElement('p')
-
-
-            p.textContent = " ▪ " + name;
-            a.href = link;
-
-            if (areUrlsEqual(link, window.location.href)) {
-              a.classList.add("current-subpage");
-            }
-
-            a.appendChild(p);
-            li.appendChild(a);
-
-            groups[group].inner.appendChild(li);
-          }
-        });
-      } else {
-        console.error('Data is not in the expected format or is empty', entries);
-      }
+      
+      renderEntries(entries, menu);
 
       main.appendChild(menu);
 
@@ -161,7 +167,33 @@ function addEntry(name, link, group, role) {
       if (chrome.runtime.lastError) {
         console.error('Error saving data to storage:', chrome.runtime.lastError);
       } else {
-        renderEntries(entries); // Re-render the entries after adding
+        let menu = document.querySelector('.left-menu');
+        renderEntries(entries, menu); // Re-render the entries after adding
+      }
+    });
+  });
+}
+
+// Function to remove an entry by index
+function removeEntry(group, link) {
+  chrome.storage.local.get(['entries'], function(result) {
+    let entries = result.entries || [];
+
+    for (let index = entries.length - 1; index >= 0; index--) {
+      if (group && entries[index].group == group) {
+        entries.splice(index, 1)
+      } else if (link && entries[index].link == link) {
+        entries.splice(index, 1)
+
+      }
+    }
+
+    chrome.storage.local.set({ entries }, function() {
+      if (chrome.runtime.lastError) {
+        console.error('Error saving data to storage:', chrome.runtime.lastError);
+      } else {
+        let menu = document.querySelector('.left-menu');
+        renderEntries(entries, menu); // Re-render the entries after removal
       }
     });
   });
@@ -169,7 +201,7 @@ function addEntry(name, link, group, role) {
 
 function makeName(arr) {
 
-  let book = ["📘","📙","📕"][Math.floor(Math.random() * 3)]
+  let book = ["📘","📙","📕","📗"][Math.floor(Math.random() * 4)]
 
 
   let name = book + arr.slice(0, arr.length - 2).join(" ");
@@ -189,29 +221,6 @@ function waitForAttribute(element, attribute, callback) {
   observer.observe(element, { attributes: true, attributeFilter: [attribute] });
 }
 
-// Function to remove an entry by index
-function removeEntry(group) {
-  chrome.storage.local.get(['entries'], function(result) {
-    let entries = result.entries || [];
-
-    for (let index = entries.length - 1; index >= 0; index--) {
-      if (entries[index].group == group) {
-        entries.splice(index, 1)
-      }
-    }
-
-    chrome.storage.local.set({ entries }, function() {
-      if (chrome.runtime.lastError) {
-        console.error('Error saving data to storage:', chrome.runtime.lastError);
-      } else {
-        renderEntries(entries); // Re-render the entries after removal
-      }
-    });
-
-    return entries;
-  });
-}
-
 function addButtonToArticle(article, entries) {
   // Check if the article already has a button
   if (article.querySelector('.course-id-button')) return;
@@ -225,69 +234,106 @@ function addButtonToArticle(article, entries) {
     // Append the button to the article
     article.appendChild(button);
 
+    button.textContent = 'Add shortcut';
+
     for (let i = 0; i < entries.length; i++) {
       if (courseId && courseId == entries[i].group) {
 
         button.classList.add('red-button');
-
         button.textContent = 'Remove shortcut';
 
-
-        button.addEventListener('click', () => {
-          let newEntries = removeEntry(courseId);
-
-          let existingMenu = document.querySelector('.left-menu');
-          existingMenu.remove();
-          button.remove();
-
-          addButtonToArticle(article, newEntries);
-
-        });
-
-        return;
       }
     }
 
-    button.textContent = 'Add shortcut';
 
     button.addEventListener('click', () => {
-      const courseTitleElement = article.querySelector('h4.js-course-title-element').textContent.trim().split(/\s+/);
 
-      addEntry(makeName(courseTitleElement), "https://ntnu.blackboard.com/webapps/blackboard/execute/courseMain?course_id=" + courseId, courseId, "title");
+      if (button.classList.contains('red-button')) {
+        button.classList.remove('red-button');
+        button.textContent = 'Add shortcut';
 
+        removeEntry(courseId, null);
+      } else {
+
+        button.classList.add('red-button');
+        button.textContent = 'Remove shortcut';
+
+        const courseTitleElement = article.querySelector('h4.js-course-title-element').textContent.trim().split(/\s+/);
+
+        addEntry(makeName(courseTitleElement), "https://ntnu.blackboard.com/webapps/blackboard/execute/courseMain?course_id=" + courseId, courseId, "title");
+      }
     });
+
+
+
   });
 
 
 }
 
-function handlePageTitleHeader(h1, entries) {
+function addButtonToCrumb(div, entries) {
 
-  if (h1.querySelector('.title-button') || window.location.href.includes("modulepage")) return;
+  if (div.querySelector('.title-button') || window.location.href.includes("modulepage")) return;
 
-  const titleTextSpan = h1.querySelector('#pageTitleText');
-  if (titleTextSpan) {
 
-    const button = document.createElement('button');
-    button.textContent = 'Add to list';
+  const crumbs = div.querySelectorAll("span[id^='crumb_']");
+  const ol = div.querySelector("ol");
 
-    const pageTitle = titleTextSpan.textContent.trim();
+  let maxCrumb = null;
+  let maxNumber = -1;
+
+  crumbs.forEach(crumb => {
+      const match = crumb.id.match(/\d+/);
+      if (match) {
+          const number = parseInt(match[0], 10);
+          if (number > maxNumber) {
+              maxNumber = number;
+              maxCrumb = crumb;
+          }
+      }
+  });
+
+  if (maxCrumb && ol) {
+      const pageTitle = maxCrumb.textContent.trim();
+      
+      const li = document.createElement('li');
+      const button = document.createElement('button');
+
+      li.appendChild(button);
+      ol.appendChild(li);
+
+      button.textContent = 'Add shortcut';
+    
+      // Apply the CSS class for styling
+      button.classList.add('title-button');
+    
+      for (let i = 0; i < entries.length; i++) {
+        if (window.location.href == entries[i].link) {
+          
+          button.classList.add('red-button');
+          button.textContent = 'Remove shortcut';
   
-    // Apply the CSS class for styling
-    button.classList.add('title-button');
+        }
+      }
+
+      // Add an event listener to the button to log the ID when clicked
+      button.addEventListener('click', () => {    
+        if (button.classList.contains('red-button')) {
+          button.classList.remove('red-button');
+          button.textContent = 'Add shortcut';
   
-    // Append the button to the article
-    h1.appendChild(button);
+          removeEntry(null, window.location.href);
+        } else {
   
-    // Add an event listener to the button to log the ID when clicked
-    button.addEventListener('click', () => {
-      addEntry(pageTitle, window.location.href, getCourseIdFromLink(window.location.href), "sublink");
-      window.location.reload();
-  
-    });
+          button.classList.add('red-button');
+          button.textContent = 'Remove shortcut';
+    
+          addEntry(pageTitle, window.location.href, getCourseIdFromLink(window.location.href), "sublink");
+        }
+
+
+      });
   }
-
-
 }
 
 let lastURL = window.location.href;
@@ -301,7 +347,11 @@ function doChanges(mutationsList) {
   if (currentURL !== lastURL) {
 
     let existingMenu = document.querySelector('.left-menu');
-    existingMenu.remove();
+
+    if (existingMenu) {
+      existingMenu.remove();
+
+    }
 
     lastURL = currentURL; // Update the last known URL
   }
@@ -323,9 +373,9 @@ function doChanges(mutationsList) {
             addButtonToArticle(node, entries);
           }
     
-          // Check for the specific h1 element
-          if (node.matches('h1#pageTitleHeader')) {
-            handlePageTitleHeader(node, entries);
+          // Breadcrumbs
+          if (node.matches(".path")) {
+            addButtonToCrumb(node, entries);
           }
         }
       });
@@ -346,5 +396,8 @@ function initialize() {
 // Start the script
 initialize();
 
-document.querySelectorAll('article[data-course-id]').forEach(addButtonToArticle);
-document.querySelectorAll('h1#pageTitleHeader').forEach(handlePageTitleHeader);
+
+chrome.storage.local.get(['entries'], function(result) {
+  document.querySelectorAll('article[data-course-id]').forEach(node => addButtonToArticle(node, result.entries));
+  document.querySelectorAll(".path").forEach(node => addButtonToCrumb(node, result.entries));
+});
