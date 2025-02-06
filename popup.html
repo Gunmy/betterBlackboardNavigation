@@ -1,46 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Link Storage</title>
-    <style>
-      body {
-        width: 300px;
-        padding: 10px;
-      }
-      input,
-      button {
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 8px;
-        box-sizing: border-box; /* Ensures consistent sizing */
-      }
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 5px;
-        font-size: 20px;
-      }
-      button.remove {
-        background-color: red;
-        color: white;
-        border: none;
-        width: 33%;
-      }
-    </style>
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h3>Create new group</h3>
-    <input type="text" id="entryName" placeholder="Title of group" />
-    <input type="url" id="entryLink" placeholder="Main link" />
-    <button id="addButton">Add</button>
-    <ul id="entriesList"></ul>
+    <h1>Blackboard Shortcut Manager</h1>
+
+    <div>
+      <input type="text" id="entryName" placeholder="Title" />
+      <input type="url" id="entryLink" placeholder="Link" />
+      <button id="addButton"><p>Add</p></button>
+    </div>
+
+    <!-- Home Page -->
+    <div id="homePage">
+      <h3>Groups</h3>
+      <ul id="entriesList"></ul>
+    </div>
+
+    <!-- Details Page -->
+    <div id="detailsPage" style="display: none">
+      <button id="backButton"><p>⬅ Back</p></button>
+      <h3 id="detailsTitle"></h3>
+      <ul id="detailsLinks"></ul>
+    </div>
 
     <script src="popup.js"></script>
   </body>

@@ -107,7 +107,7 @@
     color: white;
     border: none;
     cursor: pointer;
-  }
+}
 
 #pageTitleHeader {
     display: flex;
@@ -126,7 +126,7 @@
     font-size: 15px;
 }
   
-  .course-id-button:hover {
+  .course-id-button:hover, .title-button:hover {
     background-color: #45a049;
   }
 
