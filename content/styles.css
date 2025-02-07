@@ -87,7 +87,7 @@
 }
 
 
-.institution-page-container, .js-base-stream-container, .base-profile, .base-courses-container, .page-base-calendar, .base-messages-container, .bb-offcanvas-panel, div[bb-cache-compilation="base-grades"], #globalNavPageContentArea {
+.institution-page-container, .js-base-stream-container, .base-profile, .base-courses-container, .page-base-calendar, .base-messages-container, .bb-offcanvas-panel, div[bb-cache-compilation="base-grades"], #globalNavPageContentArea, .inserted-iframe {
     width: 85% !important;
     position: absolute !important;
     left: 15% !important;

@@ -1,15 +1,15 @@
 console.log("Rendering content!")
 
 const defaultEntries = [
-  { name: "Blackboard", link: "https://ntnu.blackboard.com", group: "blackboard", role: "title", id: "a"},
-  { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page", group: "start", role: "title", id: "b"},
-  { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile", group: "profile", role: "title", id: "c"},
-  { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream", group: "activity", role: "title", id: "d"},
-  { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar", group: "calendar", role: "title", id: "e"},
-  { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages", group: "messages", role: "title", id: "f"},
-  { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades", group: "grades", role: "title", id: "g"},
-  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course", group: "courses", role: "title", id: "h"},
-  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout", group: "logout", role: "title", id: "i"}
+  { name: "Blackboard", link: "https://ntnu.blackboard.com", group: "blackboard", role: "title", id: "a", type: "internal"},
+  { name: "🚀 Start", link: "https://ntnu.blackboard.com/ultra/institution-page", group: "start", role: "title", id: "b", type: "internal"},
+  { name: "👤 Profile", link: "https://ntnu.blackboard.com/ultra/profile", group: "profile", role: "title", id: "c", type: "internal"},
+  { name: "📋 Activity", link: "https://ntnu.blackboard.com/ultra/stream", group: "activity", role: "title", id: "d", type: "internal"},
+  { name: "📅 Calendar", link: "https://ntnu.blackboard.com/ultra/calendar", group: "calendar", role: "title", id: "e", type: "internal"},
+  { name: "✉️ Messages", link: "https://ntnu.blackboard.com/ultra/messages", group: "messages", role: "title", id: "f", type: "internal"},
+  { name: "🏆 Grades", link: "https://ntnu.blackboard.com/ultra/grades", group: "grades", role: "title", id: "g", type: "internal"},
+  { name: "📚 Courses", link: "https://ntnu.blackboard.com/ultra/course", group: "courses", role: "title", id: "h", type: "internal"},
+  { name: "↩ Log out", link: "https://ntnu.blackboard.com/ultra/logout", group: "logout", role: "title", id: "i", type: "internal"}
 ];
 
 function uuidv4() {
@@ -61,7 +61,7 @@ function renderEntries(entries, menu) {
   const groups = {}
 
   if (Array.isArray(entries) && entries.length > 0) {
-    entries.forEach(({ name, link, group, role }) => {
+    entries.forEach(({ name, link, group, role, type }) => {
 
       if (!(group in groups)) {
         groups[group] = {}
@@ -78,13 +78,19 @@ function renderEntries(entries, menu) {
         }
       }
 
+      const a = document.createElement('a');
+
+      if (type == "external") {
+        a.href = "https://ntnu.blackboard.com/ultra/external#" + link;
+      } else {
+        a.href = link;
+      }
+
       if (role == "title") {
         const title = document.createElement('h1');
-        const a = document.createElement('a');
         const p = document.createElement('p')
 
         p.textContent = name;
-        a.href = link;
 
         if (areUrlsEqual(link, window.location.href) || (window.location.href.startsWith("https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view") && sameId(link, window.location.href))) {
           title.classList.add("current-subpage");
@@ -96,12 +102,10 @@ function renderEntries(entries, menu) {
         groups[group].outer.prepend(title);
       } else if (role == "sublink") {
         const li = document.createElement('li');
-        const a = document.createElement('a');
         const p = document.createElement('p')
 
 
         p.textContent = " ▪ " + name;
-        a.href = link;
 
         if (areUrlsEqual(link, window.location.href)) {
           a.classList.add("current-subpage");
@@ -118,6 +122,19 @@ function renderEntries(entries, menu) {
   }
 }
 
+function fetchBlackboardRedirect(url) {
+      const prefix = "https://ntnu.blackboard.com/ultra/external#";
+      
+      if (url.startsWith(prefix)) {
+          const decodedUrl = decodeURIComponent(url.slice(prefix.length));
+          console.log(url, decodedUrl);
+          return decodedUrl;
+      } else {
+        return null;
+      }
+};
+
+
 // Function to apply layout classes to the left menu and off-canvas panel
 function applyLayout(entries) {
 
@@ -126,13 +143,29 @@ function applyLayout(entries) {
 
     let existingMenu = main.querySelector('.left-menu');
     if (!existingMenu) {
+
+      let externalLink = fetchBlackboardRedirect(window.location.href);
+
+      if (externalLink != null) {
+        console.log(externalLink);
+        main.innerHTML = "";
+        const iframe = document.createElement("iframe");
+        iframe.src = externalLink;
+        iframe.classList.add("inserted-iframe");
+
+        main.appendChild(iframe);
+      }
+
       // Create the menu
       let menu = document.createElement('ul');
       menu.classList.add('left-menu');
       
       renderEntries(entries, menu);
 
-      main.appendChild(menu);
+      main.prepend(menu);
+
+
+  
 
     const offCanvasPanel = document.querySelector('.bb-offcanvas-panel');
 
@@ -161,7 +194,7 @@ function removeClose() {
 function addEntry(name, link, group, role) {
   chrome.storage.local.get(['entries'], function(result) {
     let entries = result.entries || [];
-    entries.push({ name, link, group, role, id: uuidv4()});
+    entries.push({ name, link, group, role, id: uuidv4(), type: "internal"});
 
     chrome.storage.local.set({ entries }, function() {
       if (chrome.runtime.lastError) {
