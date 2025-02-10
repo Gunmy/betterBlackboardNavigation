@@ -22,12 +22,13 @@
 
  overflow-y: auto;
  overflow-x: hidden;
+ font-size: 15px !important;
 
 }
 
 
 
-.left-menu, .left-menu > li, .left-menu > li > h1, .left-menu > li > ul, .left-menu > li > ul > li, .left-menu > li > ul > li > a, .left-menu > li > h1 > a {
+.left-menu, .left-menu > li, .left-menu > li > h1, .left-menu > li > ul, .left-menu > li > ul > li, .left-menu > li > ul > li > a, .left-menu > li > h1 > a, #embeddedFrame {
     padding: 0 !important;
     margin: 0 !important;
     text-decoration: none !important;
@@ -36,19 +37,24 @@
     color: black;
 
     list-style: none;
+    font-size: 15px !important;
+
 }
 
 .left-menu > li, .left-menu > li > h1, .left-menu > li > ul, .left-menu > li > ul > li, .left-menu > li > ul > li > a, .left-menu > li > h1 > a {
     width: 100%;
     height: auto !important;
+
+    font-size: 15px !important;
+
  
 }
 
 .left-menu > li > h1 > a > p {
-    padding: 1rem !important;
-    padding-left: 2rem !important;
+    padding: 1em !important;
+    padding-left: 2em !important;
 
-    font-size: 1.2rem !important;
+    font-size: 1.2em !important;
 
 
     white-space: nowrap !important;           
@@ -66,13 +72,16 @@
     font-weight: 100 !important;
 
     height: auto !important;
+
+    font-size: 15px !important;
+
 }
 
 .left-menu > li > ul > li > a > p {
-    padding: 1rem !important;
-    padding-left: 3rem !important;
+    padding: 1em !important;
+    padding-left: 3em !important;
 
-    font-size: 1rem  !important;
+    font-size: 1em  !important;
     margin: 0 !important;
 
     text-decoration: none !important;
@@ -84,17 +93,24 @@
     font-weight: "normal" !important;
 
     height: auto !important;
+
+    font-size: 15px !important;
+
 }
 
 
-.institution-page-container, .js-base-stream-container, .base-profile, .base-courses-container, .page-base-calendar, .base-messages-container, .bb-offcanvas-panel, div[bb-cache-compilation="base-grades"], #globalNavPageContentArea, .inserted-iframe {
+.institution-page-container, .js-base-stream-container, .base-profile, .base-courses-container, .page-base-calendar, .base-messages-container, .bb-offcanvas-panel, div[bb-cache-compilation="base-grades"], #globalNavPageContentArea, #embeddedFrame {
     width: 85% !important;
     position: absolute !important;
     left: 15% !important;
     height: 100vh !important;
     overflow-y: scroll;
-}
+    border: none;
+    top: 0;
 
+    font-size: 15px !important;
+
+}
 
 
 .course-id-button {
@@ -107,6 +123,9 @@
     color: white;
     border: none;
     cursor: pointer;
+
+    font-size: 15px !important;
+
 }
 
 #pageTitleHeader {
@@ -115,6 +134,9 @@
     justify-content: center;
     align-items: center;
     gap: 5px;
+
+    font-size: 15px !important;
+
 }
 
 .title-button {
@@ -124,6 +146,9 @@
     border: none;
     cursor: pointer;
     font-size: 15px;
+
+    font-size: 15px !important;
+
 }
   
   .course-id-button:hover, .title-button:hover {
@@ -132,7 +157,7 @@
 
 
   .left-menu > .title_div > .title {
-    font-size: 20px !important;
+    font-size: 15px !important;
 
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
 

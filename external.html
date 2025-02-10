@@ -1,27 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded Page</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-        iframe {
-            width: 90%;
-            height: 90%;
-            border: none;
-        }
-    </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>External page</title>
+    <link rel="stylesheet" href="content/styles.css" />
+  </head>
+  <body>
     <iframe id="embeddedFrame"></iframe>
-    <script src="external.js"></script>  <!-- ✅ Now using an external file -->
-</body>
+    <script src="content/content.js"></script>
+
+    <script src="external.js"></script>
+  </body>
 </html>

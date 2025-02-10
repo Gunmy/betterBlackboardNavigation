@@ -52,6 +52,10 @@ function areUrlsEqual(url1, url2) {
   return normalizeUrl(url1) === normalizeUrl(url2);
 }
 
+function getURLParameter(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
 
 function renderEntries(entries, menu) {
   // Create the links
@@ -59,6 +63,9 @@ function renderEntries(entries, menu) {
   menu.innerHTML = "";
 
   const groups = {}
+
+  const currentUrl = getURLParameter("url");
+
 
   if (Array.isArray(entries) && entries.length > 0) {
     entries.forEach(({ name, link, group, role, type }) => {
@@ -78,10 +85,14 @@ function renderEntries(entries, menu) {
         }
       }
 
+      if (areUrlsEqual(link, currentUrl)) {
+        groups[group].outer.classList.add("current-page");
+      }
+
       const a = document.createElement('a');
 
       if (type == "external") {
-        a.href = "https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view#" + link;
+        a.href = chrome.runtime.getURL(`external.html?url=${encodeURIComponent(link)}`);;
       } else {
         a.href = link;
       }
@@ -92,7 +103,7 @@ function renderEntries(entries, menu) {
 
         p.textContent = name;
 
-        if (areUrlsEqual(link, window.location.href) || (window.location.href.startsWith("https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view") && sameId(link, window.location.href))) {
+        if (areUrlsEqual(link, window.location.href) || (window.location.href.startsWith("https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view") && sameId(link, window.location.href)) || areUrlsEqual(link, currentUrl)) {
           title.classList.add("current-subpage");
         }
 
@@ -107,7 +118,7 @@ function renderEntries(entries, menu) {
 
         p.textContent = " ▪ " + name;
 
-        if (areUrlsEqual(link, window.location.href)) {
+        if (areUrlsEqual(link, window.location.href) || areUrlsEqual(link, currentUrl)) {
           a.classList.add("current-subpage");
         }
 
@@ -122,18 +133,6 @@ function renderEntries(entries, menu) {
   }
 }
 
-function fetchBlackboardRedirect(url) {
-      const prefix = "https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view#"
-      
-      if (url.startsWith(prefix)) {
-          const decodedUrl = decodeURIComponent(url.slice(prefix.length));
-          console.log(url, decodedUrl);
-          return decodedUrl;
-      } else {
-        return null;
-      }
-};
-
 
 // Function to apply layout classes to the left menu and off-canvas panel
 function applyLayout(entries) {
@@ -143,18 +142,6 @@ function applyLayout(entries) {
 
     let existingMenu = main.querySelector('.left-menu');
     if (!existingMenu) {
-
-      let externalLink = fetchBlackboardRedirect(window.location.href);
-
-      if (externalLink != null) {
-        console.log(externalLink);
-        main.innerHTML = "";
-        const iframe = document.createElement("iframe");
-        iframe.src = externalLink;
-        iframe.classList.add("inserted-iframe");
-
-        main.appendChild(iframe);
-      }
 
       // Create the menu
       let menu = document.createElement('ul');
