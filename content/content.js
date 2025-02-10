@@ -81,7 +81,7 @@ function renderEntries(entries, menu) {
       const a = document.createElement('a');
 
       if (type == "external") {
-        a.href = "https://ntnu.blackboard.com/ultra/external#" + link;
+        a.href = "https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view#" + link;
       } else {
         a.href = link;
       }
@@ -123,7 +123,7 @@ function renderEntries(entries, menu) {
 }
 
 function fetchBlackboardRedirect(url) {
-      const prefix = "https://ntnu.blackboard.com/ultra/external#";
+      const prefix = "https://ntnu.blackboard.com/webapps/blackboard/execute/modulepage/view#"
       
       if (url.startsWith(prefix)) {
           const decodedUrl = decodeURIComponent(url.slice(prefix.length));
