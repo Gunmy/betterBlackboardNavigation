@@ -29,6 +29,14 @@ const detailsTitle = document.getElementById("detailsTitle");
 const detailsLinks = document.getElementById("detailsLinks");
 const backButton = document.getElementById("backButton");
 
+document.addEventListener("DOMContentLoaded", async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab) {
+      console.log("Current URL:", tab.url);
+      entryLinkInput.value = tab.url;
+  }
+});
+
 let currentGroup = null;
 
 // Function to show home or details page

@@ -5,7 +5,8 @@
   "description": "An extension that modifies the layout on blackboard.com",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "action": {
     "default_popup": "popup.html"

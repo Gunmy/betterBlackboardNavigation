@@ -9,7 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (url) {
         // Security: Prevent embedding non-HTTPS or chrome-extension pages
         if (url.startsWith("http://") || url.startsWith("https://")) {
-            document.getElementById("embeddedFrame").src = url;
+            const iframe = document.getElementById("embeddedFrame");
+            
+            iframe.src = url;
+            
+        
         } else {
             alert("Invalid URL");
         }
