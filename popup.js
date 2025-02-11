@@ -45,7 +45,29 @@ function showPage(page) {
   detailsPage.style.display = page === "details" ? "block" : "none";
 }
 
+function updateLink(group, entries, id) {
+  const newName = prompt("Enter the new name for the link:");
 
+  if (newName) {
+    // Find the entry by id and update its name
+    const entry = entries.find(entry => entry.id === id);
+    if (entry) {
+      entry.name = newName;
+
+      // Update the entries in storage
+      chrome.storage.local.set({ entries }, function () {
+        if (chrome.runtime.lastError) {
+          console.error("Error saving data to storage:", chrome.runtime.lastError);
+        } else {
+          renderEntries(entries);  // Re-render the home page list
+          if (currentGroup) {
+            showDetails(currentGroup, entries);  // Re-render the details page list if needed
+          }
+        }
+      });
+    }
+  }
+}
 
 // Function to render the entries list
 function renderEntries(entries) {
@@ -74,9 +96,17 @@ function renderEntries(entries) {
         removeButton.innerHTML = "<p>Remove</p>";
         removeButton.onclick = () => renderEntries(removeEntry(entries, entry.group, null));
 
+        const updateButton = document.createElement("button");
+        updateButton.classList.add("update");
+        updateButton.dataset.group = entry.group;
+        updateButton.innerHTML = "<p>Update</p>";
+        updateButton.onclick = () => updateLink(entry.group, entries, entry.id);
+
         li.appendChild(linkDiv);
         li.appendChild(viewButton);
         li.appendChild(removeButton);
+        li.appendChild(updateButton);
+
         entriesList.appendChild(li);
       }
     });
@@ -154,9 +184,17 @@ function showDetails(group, entries) {
       removeButton.dataset.group = entry.group;
       removeButton.innerHTML = "<p>Remove</p>";
       removeButton.onclick = () => showDetails(group, removeEntry(entries, null, entry.link));
+
+      const updateButton = document.createElement("button");
+      updateButton.classList.add("update");
+      updateButton.dataset.group = entry.group;
+      updateButton.innerHTML = "<p>Update</p>";
+      updateButton.onclick = () => updateLink(entry.group, entries, entry.id);
       
       li.appendChild(linkDiv);
       li.appendChild(removeButton);
+      li.appendChild(updateButton);
+
       detailsLinks.appendChild(li);
     });
   } else {
