@@ -45,8 +45,8 @@ function showPage(page) {
   detailsPage.style.display = page === "details" ? "block" : "none";
 }
 
-function updateLink(group, entries, id) {
-  const newName = prompt("Enter the new name for the link:");
+function updateLink(name, entries, id) {
+  const newName = prompt("Enter the new name for the link:", name);
 
   if (newName) {
     // Find the entry by id and update its name
@@ -100,7 +100,7 @@ function renderEntries(entries) {
         updateButton.classList.add("update");
         updateButton.dataset.group = entry.group;
         updateButton.innerHTML = "<p>Update</p>";
-        updateButton.onclick = () => updateLink(entry.group, entries, entry.id);
+        updateButton.onclick = () => updateLink(entry.name, entries, entry.id);
 
         li.appendChild(linkDiv);
         li.appendChild(viewButton);
@@ -189,7 +189,7 @@ function showDetails(group, entries) {
       updateButton.classList.add("update");
       updateButton.dataset.group = entry.group;
       updateButton.innerHTML = "<p>Update</p>";
-      updateButton.onclick = () => updateLink(entry.group, entries, entry.id);
+      updateButton.onclick = () => updateLink(entry.name, entries, entry.id);
       
       li.appendChild(linkDiv);
       li.appendChild(removeButton);

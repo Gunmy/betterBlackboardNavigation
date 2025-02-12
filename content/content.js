@@ -116,7 +116,7 @@ function renderEntries(entries, menu) {
         const p = document.createElement('p')
 
 
-        p.textContent = " ▪ " + name;
+        p.textContent = name;
 
         if (areUrlsEqual(link, window.location.href) || areUrlsEqual(link, currentUrl)) {
           a.classList.add("current-subpage");
