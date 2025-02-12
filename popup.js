@@ -48,7 +48,7 @@ function showPage(page) {
 function updateLink(name, entries, id) {
   const newName = prompt("Enter the new name for the link:", name);
 
-  if (newName) {
+  if (newName && newName !== name) {
     // Find the entry by id and update its name
     const entry = entries.find(entry => entry.id === id);
     if (entry) {
