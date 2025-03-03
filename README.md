@@ -10,3 +10,4 @@
 - [ ] Add a "hide menu" button
 - [ ] Make it work properly on smaller screens
 - [x] Switch from local-storage to one that syncs across devices
+- [] Automatically update the sidebar when adding shortcut with the popup

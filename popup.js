@@ -99,7 +99,7 @@ function renderEntries(entries) {
         const updateButton = document.createElement("button");
         updateButton.classList.add("update");
         updateButton.dataset.group = entry.group;
-        updateButton.innerHTML = "<p>Update</p>";
+        updateButton.innerHTML = "<p>Rename</p>";
         updateButton.onclick = () => updateLink(entry.name, entries, entry.id);
 
         li.appendChild(linkDiv);
@@ -188,7 +188,7 @@ function showDetails(group, entries) {
       const updateButton = document.createElement("button");
       updateButton.classList.add("update");
       updateButton.dataset.group = entry.group;
-      updateButton.innerHTML = "<p>Update</p>";
+      updateButton.innerHTML = "<p>Rename</p>";
       updateButton.onclick = () => updateLink(entry.name, entries, entry.id);
       
       li.appendChild(linkDiv);
