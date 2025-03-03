@@ -55,7 +55,7 @@ function updateLink(name, entries, id) {
       entry.name = newName;
 
       // Update the entries in storage
-      chrome.storage.local.set({ entries }, function () {
+      chrome.storage.sync.set({ entries }, function () {
         if (chrome.runtime.lastError) {
           console.error("Error saving data to storage:", chrome.runtime.lastError);
         } else {
@@ -118,11 +118,11 @@ function renderEntries(entries) {
 
 // Function to add a new entry
 function addEntry(name, link, group, role) {
-  chrome.storage.local.get(["entries"], function (result) {
+  chrome.storage.sync.get(["entries"], function (result) {
     let entries = result.entries || [];
     entries.push({ name, link, group, role, id: uuidv4(), type: "external"});
 
-    chrome.storage.local.set({ entries }, function () {
+    chrome.storage.sync.set({ entries }, function () {
       if (chrome.runtime.lastError) {
         console.error("Error saving data to storage:", chrome.runtime.lastError);
       } else {
@@ -146,7 +146,7 @@ function removeEntry(entries, group, link) {
     }
   }
 
-  chrome.storage.local.set({ entries }, function () {
+  chrome.storage.sync.set({ entries }, function () {
   });
 
   return entries;
@@ -233,12 +233,12 @@ backButton.addEventListener("click", function () {
 });
 
 // Load saved entries
-chrome.storage.local.get(["entries"], function (result) {
+chrome.storage.sync.get(["entries"], function (result) {
   let entries = result.entries || [];
 
   if (entries.length === 0) {
     entries = defaultEntries;
-    chrome.storage.local.set({ entries });
+    chrome.storage.sync.set({ entries });
   }
 
   renderEntries(entries);

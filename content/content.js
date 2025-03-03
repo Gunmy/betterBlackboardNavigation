@@ -19,13 +19,13 @@ function uuidv4() {
 }
 
 // Load and render saved entries when the popup is opened
-chrome.storage.local.get(['entries'], function(result) {
+chrome.storage.sync.get(['entries'], function(result) {
   let entries = result.entries || [];
   
   // If entries are empty, initialize with default values
   if (entries.length === 0) {
     entries = defaultEntries;
-    chrome.storage.local.set({ entries }); // Save default entries to storage
+    chrome.storage.sync.set({ entries }); // Save default entries to storage
   }
 });
 
@@ -179,11 +179,11 @@ function removeClose() {
 
 
 function addEntry(name, link, group, role) {
-  chrome.storage.local.get(['entries'], function(result) {
+  chrome.storage.sync.get(['entries'], function(result) {
     let entries = result.entries || [];
     entries.push({ name, link, group, role, id: uuidv4(), type: "internal"});
 
-    chrome.storage.local.set({ entries }, function() {
+    chrome.storage.sync.set({ entries }, function() {
       if (chrome.runtime.lastError) {
         console.error('Error saving data to storage:', chrome.runtime.lastError);
       } else {
@@ -196,7 +196,7 @@ function addEntry(name, link, group, role) {
 
 // Function to remove an entry by index
 function removeEntry(group, link) {
-  chrome.storage.local.get(['entries'], function(result) {
+  chrome.storage.sync.get(['entries'], function(result) {
     let entries = result.entries || [];
 
     for (let index = entries.length - 1; index >= 0; index--) {
@@ -208,7 +208,7 @@ function removeEntry(group, link) {
       }
     }
 
-    chrome.storage.local.set({ entries }, function() {
+    chrome.storage.sync.set({ entries }, function() {
       if (chrome.runtime.lastError) {
         console.error('Error saving data to storage:', chrome.runtime.lastError);
       } else {
@@ -376,7 +376,7 @@ function doChanges(mutationsList) {
     lastURL = currentURL; // Update the last known URL
   }
 
-  chrome.storage.local.get(['entries'], function(result) {
+  chrome.storage.sync.get(['entries'], function(result) {
     const entries = result.entries && result.entries.length > 0 ? result.entries : defaultEntries;
 
     let existingMenu = document.querySelector('.left-menu');
@@ -417,7 +417,7 @@ function initialize() {
 initialize();
 
 
-chrome.storage.local.get(['entries'], function(result) {
+chrome.storage.sync.get(['entries'], function(result) {
   document.querySelectorAll('article[data-course-id]').forEach(node => addButtonToArticle(node, result.entries));
   document.querySelectorAll(".path").forEach(node => addButtonToCrumb(node, result.entries));
 });
